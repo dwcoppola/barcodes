@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.4/dist/JsBarcode.all.min.js"></script>
+        <title>Barcode Generator</title>
+        <script defer>
+
+        function getBarcode(event) {
+        
+            const e = event.which || event.KeyCode;
+            if (e === 13) {
+                
+                const metal = document.getElementById('metal');
+                const action = document.getElementById('action');
+                const weight = document.getElementById('weight');
+                const str = `${metal.value},${action.value},${weight.value}`;
+                JsBarcode("#barcode", `${str}`);
+                metal.focus();
+                weight.value = '';
+
+                setTimeout(function() {
+                        confirm('Do you want to print?');
+                    }, 100)
+
+            } else {/* do nothing */}
+        
+        }
+           
+        function initCaps(str) {
+        
+            return str.slice(0, 1).toUpperCase() + str.slice(1, str.length)
+        
+        }
+
+        function parseBarcode() {
+        
+            let barcode = document.getElementById('barcode-input');
+                if (barcode.value.trim() !== '') {
+                array = barcode.value.split(',');
+                const list = document.getElementById('barcode-attributes');
+                list.innerHTML +=
+                `
+                <li>
+                    <b>${initCaps(array[0])} </b>
+                    <b>${array[1].toUpperCase()}</b>
+                    <b>${initCaps(array[2])} dwt</b>
+                </li>
+                `
+            }
+        
+            barcode.value = '';
+        
+        }
+
+        </script>
+    </head>
+    <body>
+    <div id="main" style="width: 702px;">
+        <label>Metal:</label>
+        <select autofocus id="metal">
+            <option selected disabled value="">Choose:</option>
+            <option value="gold">Gold</option>
+            <option value="silver">Silver</option>
+            <option value="platinum">Platinum</option>
+        </select>
+
+        <label>Action:</label>
+        <select id="action">
+            <option selected disabled value="">Choose:</option>
+            <option value="out">Out</option>
+            <option value="in">In</option>
+        </select>
+    
+        <input onkeypress="getBarcode(event)" id="weight" placeholder="weight"/>
+
+        <hr>
+
+        <p>Preview:</p>
+        <div id="barcode-container" style="width: 700px; text-align: center; height: 150px; border: 1px solid black;">
+            <svg id="barcode">
+            </svg>
+        </div>
+
+        <hr>
+
+        <input id="barcode-input" placeholder="Scan into this field" onchange="parseBarcode()">
+
+        <div id="barcode-information">
+            <ol id="barcode-attributes">
+
+            </ol>
+        </div>
+
+    </div>
+    </body>
+</html>
